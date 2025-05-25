@@ -1,7 +1,7 @@
 # Netflix - GPT
 
 - Created a Vite App
-- Configured Tailwind CSS 4
+- Configured TailwindCSS 4
 
 # Features
 

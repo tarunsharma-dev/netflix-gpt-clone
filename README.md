@@ -1,10 +1,12 @@
-# Netflix - GPT
+# flix - GPT
 
 - Created a Vite App
 - Configured TailwindCSS 4
 - Header
 - Login Form
 - Sign Up Form
+- Form Validations
+- useRef Hook
 
 # Features
 
@@ -22,6 +24,6 @@
     - Movie Suggestions
     - Movie Lists & N
 
-- NetflixGPT
+- flixGPT
   - Search Bar
   - Movie Suggestions

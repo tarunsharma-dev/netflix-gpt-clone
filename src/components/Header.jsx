@@ -1,10 +1,21 @@
-import React from "react";
-
+import React, { useState } from "react";
+import profileIcon from "../assets/img/profile_icon.png";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
+import { removeUser } from "../utils/userSlice";
 function Header() {
+  const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    dispatch(removeUser());
+    navigate("/");
+  };
+
   return (
     <div className="w-full top-0 left-0 flex items-center justify-between p-4 bg-gradient-to-b from-black">
       <div className="container relative w-full h-full mx-auto">
-        <svg
+        {/* <svg
           viewBox="0 0 111 30"
           version="1.1"
           aria-hidden="true"
@@ -17,7 +28,28 @@ function Header() {
               fill="currentColor"
             ></path>
           </g>
-        </svg>
+        </svg> */}
+        <span className="text-brand w-44">ViGPT-Dev</span>
+      </div>
+      <div className="relative">
+        <div className="w-10 h-10 flex items-center justify-center">
+          <img
+            src={profileIcon}
+            alt="profile"
+            className="w-full h-full cursor-pointer rounded-lg"
+            onClick={() => setIsOpen(!isOpen)}
+          />
+        </div>
+        {isOpen && (
+          <div className="flex flex-col items-center justify-center bg-gray-900 rounded-lg w-32 absolute top-10 right-0 text-white shadow-lg overflow-hidden z-10 transition-all duration-300">
+            <div
+              className="p-2 px-3 w-full cursor-pointer rounded-lg hover:bg-gray-800"
+              onClick={handleLogout}
+            >
+              <span>Logout</span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

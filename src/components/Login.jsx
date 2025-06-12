@@ -1,6 +1,13 @@
 import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { checkValidData } from "../utils/validate";
+import { auth } from "../utils/firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+
+import bg_image from "../assets/bg-image2.jpg"; // Assuming you have a background image
 
 function Login() {
   const [isSignInForm, setIsSignInForm] = useState(true);
@@ -15,13 +22,65 @@ function Login() {
     // console.log(email.current.value);
     // console.log(password.current.value);
     const message = checkValidData(
-      name.current.value,
+      undefined,
       email.current.value,
       password.current.value
     );
     setErrorMessage(message);
 
+    if (message !== null) {
+      return;
+    }
     // sign in or sign up logic
+
+    if (!isSignInForm) {
+      // Sign Up logic
+
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          // ...
+          console.log("User signed up:", user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorMessage + " " + errorCode);
+          console.log("Error signing up:", errorMessage, errorCode);
+          // ..
+        });
+      console.log("Signing Up with:", {
+        name: name.current.value,
+        email: email.current.value,
+        password: password.current.value,
+      });
+      // Here you can call your sign up API or function
+    } else {
+      // Sign In logic
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log("User signed in:", user);
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+
+          setErrorMessage(errorCode + " " + errorMessage);
+        });
+      // Here you can call your sign in API or function
+    }
 
     // console.log(message);
   };
@@ -32,7 +91,7 @@ function Login() {
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100 relative">
       <div className="">
         <img
-          src="https://assets.nflxext.com/ffe/siteui/vlv3/914ad279-199e-4095-9c10-2409dc9e5e1b/web/IN-en-20250519-TRIFECTA-perspective_8f1ca896-9e49-4a4e-90f0-22fc49650bd9_large.jpg"
+          src={bg_image}
           alt="bg-image"
           className="absolute inset-0 object-cover w-full h-full"
         />
@@ -83,7 +142,7 @@ function Login() {
               {isSignInForm ? "Sign In" : "Sign Up"}
             </button>
             <div className="text-center text-gray-400 mb-4">
-              {isSignInForm ? "New to Netflix?" : "Already registered?"}{" "}
+              {isSignInForm ? "New to VideoGPT-Dev?" : "Already registered?"}{" "}
               <span
                 role="button"
                 className="text-red-700 cursor-pointer hover:underline"

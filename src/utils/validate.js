@@ -1,4 +1,4 @@
-export const checkValidData = (name, email, password) => {
+export const checkValidData = (name = undefined, email, password) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex =
     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
@@ -7,8 +7,8 @@ export const checkValidData = (name, email, password) => {
     return "Email and password cannot be empty.";
   }
 
-  if (!name) {
-    return "Full Name cannot be empty.";
+  if (name !== undefined && name.trim() === "") {
+    return "Name is required";
   }
 
   if (!emailRegex.test(email)) {

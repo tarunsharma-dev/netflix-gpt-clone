@@ -2,14 +2,19 @@ import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { checkValidData } from "../utils/validate";
 import { auth } from "../utils/firebase";
+import profileIcon from "../assets/img/profile_icon.png";
 import {
   createUserWithEmailAndPassword,
+  getAuth,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 
 import bg_image from "../assets/bg-image2.jpg"; // Assuming you have a background image
+import { useNavigate } from "react-router";
 
 function Login() {
+  const navigate = useNavigate();
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -44,8 +49,28 @@ function Login() {
         .then((userCredential) => {
           // Signed up
           const user = userCredential.user;
+
+          // const auth = getAuth();
+          updateProfile(user, {
+            displayName: name.current.value,
+            photoURL:
+              "https://wallpapers.com/images/high/netflix-profile-pictures-1000-x-1000-qo9h82134t9nv0j0.webp", // Default profile picture
+          })
+            .then(() => {
+              // Profile updated!
+              // ...
+              console.log("Profile updated successfully!");
+              navigate("/browse");
+            })
+            .catch((error) => {
+              // An error occurred
+              // ...
+
+              setErrorMessage(error);
+              // navigate("/error");
+            });
           // ...
-          console.log("User signed up:", user);
+          // console.log("User signed up:", user);
         })
         .catch((error) => {
           const errorCode = error.code;

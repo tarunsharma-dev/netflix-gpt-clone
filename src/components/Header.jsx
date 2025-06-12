@@ -1,15 +1,25 @@
 import React, { useState } from "react";
 import profileIcon from "../assets/img/profile_icon.png";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { removeUser } from "../utils/userSlice";
+import { getAuth, signOut } from "firebase/auth";
 function Header() {
+  const user = useSelector((store) => store.user);
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleLogout = () => {
-    dispatch(removeUser());
-    navigate("/");
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        dispatch(removeUser());
+        navigate("/");
+      })
+      .catch((error) => {
+        // An error happened.
+      });
   };
 
   return (
@@ -31,26 +41,28 @@ function Header() {
         </svg> */}
         <span className="text-brand w-44">ViGPT-Dev</span>
       </div>
-      <div className="relative">
-        <div className="w-10 h-10 flex items-center justify-center">
-          <img
-            src={profileIcon}
-            alt="profile"
-            className="w-full h-full cursor-pointer rounded-lg"
-            onClick={() => setIsOpen(!isOpen)}
-          />
-        </div>
-        {isOpen && (
-          <div className="flex flex-col items-center justify-center bg-gray-900 rounded-lg w-32 absolute top-10 right-0 text-white shadow-lg overflow-hidden z-10 transition-all duration-300">
-            <div
-              className="p-2 px-3 w-full cursor-pointer rounded-lg hover:bg-gray-800"
-              onClick={handleLogout}
-            >
-              <span>Logout</span>
-            </div>
+      {user && (
+        <div className="relative">
+          <div className="w-10 h-10 flex items-center justify-center">
+            <img
+              src={user?.photoURL || profileIcon}
+              alt="profile"
+              className="w-full h-full cursor-pointer rounded-lg"
+              onClick={() => setIsOpen(!isOpen)}
+            />
           </div>
-        )}
-      </div>
+          {isOpen && (
+            <div className="flex flex-col items-center justify-center bg-gray-900 rounded-lg w-32 absolute top-10 right-0 text-white shadow-lg overflow-hidden z-10 transition-all duration-300">
+              <div
+                className="p-2 px-3 w-full cursor-pointer rounded-lg hover:bg-gray-800"
+                onClick={handleLogout}
+              >
+                <span>Logout</span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
